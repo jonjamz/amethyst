@@ -1,7 +1,7 @@
 Understanding Amethyst
 ----------------------
 
-Amethyst is an interpretation of _subject-oriented programming_ designed for web applications running JavaScript. Subjects are essentially shared subcomponents that handle specific tasks inside an application, and they act as building blocks for larger components. The idea here is that many components will have cross-cutting concerns, or things in common, and the best way to address this issue is by abstracting out the common functionality into separately maintainable objects. A better-known, less radical, but related paradigm is _aspect-oriented programming_. 
+Amethyst is an interpretation of the _subject-oriented programming_ paradigm designed for web applications running JavaScript. Subjects are essentially shared subcomponents that handle specific tasks inside an application, and they act as building blocks for larger components. The idea here is that many components will have cross-cutting concerns, or things in common, and the best way to address this issue is by abstracting out the common functionality into separately maintainable objects. A better-known, less radical, but related paradigm is _aspect-oriented programming_. 
 
 Subjects can be loaded into any context, and they will interact with that context as needed to carry out their functionality. A subject in Amethyst can list other subjects as dependencies, or a developer can load subjects into anything in a hugely flexible way using the provided `load()` function (see all the patterns below).
 
