@@ -1,13 +1,19 @@
-Understanding Subjects
+Understanding Amethyst
 ----------------------
 
-You're probably new to _subject-oriented programming_. You might look through the examples below and notice that much of the functionality we're packaging into subjects could be created with namespaced methods. So, what is the advantage of using subjects?
+Amethyst is an interpretation of _subject-oriented programming_ designed for web applications running JavaScript. Subjects are essentially shared subcomponents that handle specific tasks inside an application, and they act as building blocks for larger components. The idea here is that many components will have cross-cutting concerns, or things in common, and the best way to address this issue is by abstracting out the common functionality into separately maintainable objects. A better-known, less radical, but related paradigm is _aspect-oriented programming_. 
 
-Functions, by themselves, don't allow you to keep track of state. Outside structures are required. You can bind a function to `this` in a constructor, or apply it to object, but how do you ensure that the function has access to everything it needs to do its job properly? Not to mention, things get really messy if you need to build functionality in layers.
+Subjects can be loaded into any context, and they will interact with that context as needed to carry out their functionality. A subject in Amethyst can list other subjects as dependencies, or a developer can load subjects into anything in a hugely flexible way using the provided `load()` function (see all the patterns below).
 
-Subjects provide a way to ensure that everything you need in order to execute some piece of functionality is self-contained and reusable. Also, you can very easily save a subject from within a closure, meaning all components that use that subject have access to the same encapsulated, shared data structures, similar to Flyweight pattern.
+You might look through the examples below and notice that much of the functionality we're touting can be created with object-oriented inheritance. So, what is the advantage of using Amethyst?
 
-Subjects don't run until you load them. You can have a subject within a subject within a subject (an so on) and if you don't load the parent, the children won't load either. This allows you to explore deep functionality and customization at a negligible cost. Use what you need when you need it.
+Subjects in Amethyst are a bit like classes, but much more flexible. Like a class, a subject has encapsulation, and it has a public API. But subjects are not instantiated. They are not separate instances. They are, for the most part, comprised of references. Additionally, subjects can affect their parent context where needed and similarly, the parent can affect them when they are loaded in. When you want to build functionality in layers, this extra flexibility can really save the maintainability of an application. If you want to save memory by sharing structures and making things idempotent, this too becomes incredibly easy when compared to setting things up with classes.
+
+So essentially, we're passing common pieces of functionality around and binding them to different contexts. But we're also running functions to load and unload this functionality, and providing some flexible APIs.
+
+Subjects in Amethyst ensure that everything you need in order to execute some piece of functionality is self-contained, reusable, and automatically namespaced. Subjects also can very easily share the same data structures across many different parent objects if desired--you can very easily save a subject from within a closure, meaning all components that use that subject have access to the same encapsulated, shared data structures, similar to Flyweight pattern.
+
+Subjects in Amethyst __are all lazy-loaded__. Child subjects of a parent don't run until you load the parent. _This differs greatly from a package system._ You can have a subject within a subject within a subject (an so on) and if you don't load the parent, the children won't load either. This allows you to explore deep functionality and customization at a negligible cost. Use what you need when you need it.
 
 Subjects force you to build canonical applications. If you create your entire application using subjects, you'll have a single place to control all error handling and logging. Want to integrate the latest remote logging API? Just put it in one place and watch all logs appear there. All the forms in your application will use the same validation and style, and if you want to make some minor changes, you just have to create a new subject that loads in and modifies the previous `forms` subject. The list goes on.
 
@@ -21,12 +27,12 @@ There are three ways to gain functionality from a subject:
   - Can be used to create a closure unique to every load
 - From whatever's in the subject's closure (shared among all loaded subjects, see `store` below...it's easy to cache things across subjects, similar to a Flyweight)
 - From whatever's in the API
-  - If loaded() does something on `this`, the API can offer different ways of dealing with what it created, since they're both bound to whatever R.subjects.load specified as the first argument.
+  - If loaded() does something on `this`, the API can offer different ways of dealing with what it created, since they're both bound to whatever A.subjects.load specified as the first argument.
 - Loaded can set up all the subject's functionality, but the API provides the official methods of dealing with that functionality
 
 ```javascript
 // For the comments below, assuming this subject was loaded into a
-// component with R.subjects.load(this, 'example');
+// component with A.subjects.load(this, 'example');
 
 // Not required, but if you put things in this space all instances of
 // subjects can share them if they're referenced from any of the functions
@@ -36,12 +42,12 @@ var store = {};
 var loaded = function (options) {
   // Loaded has direct access to `this`.
   // It is called when the subject is loaded into a component, and it can
-  // return a handle, e.g. var handle = R.subjects.load(this, 'example');
+  // return a handle, e.g. var handle = A.subjects.load(this, 'example');
 };
 
 var unloaded = function (options) {
   // Unloaded also has direct access to `this`.
-  // It can be called at any time like R.subjects.unload(this, 'example');
+  // It can be called at any time like A.subjects.unload(this, 'example');
 };
 
 // Api is loaded into the namespace of the subject in a component.
@@ -61,7 +67,7 @@ var subject = {
   }
 };
 
-R.subjects.save(subject);
+A.subjects.save(subject);
 ```
 
 Using a Subject
@@ -78,7 +84,7 @@ _It's highly recommended to use this pattern._
 ```javascript
 // You want to have many instances of some functionality.
 var Component = function (options) {
-  R.subjects.load(this, 'example');
+  A.subjects.load(this, 'example');
   return; // If you're using CoffeeScript, make sure to return nothing or `undefined`
 };
 
@@ -96,7 +102,7 @@ var Component = function (options) {
   //...
 };
 
-R.subjects.load(Component.prototype, 'example');
+A.subjects.load(Component.prototype, 'example');
 
 var instance1 = new Component();
 var instance2 = new Component();
@@ -111,7 +117,7 @@ This pattern allows you to encapsulate functionality, but it runs immediately on
 // You want to encapsulate some functionality.
 var Component = (function () {
   var privateSubject = {};
-  R.subjects.load(privateSubject, 'example');
+  A.subjects.load(privateSubject, 'example');
   return {
     publicMethod: privateSubject.example.method
   };
@@ -125,7 +131,7 @@ __Decorator__
 ```javascript
 // You want to pass in an existing object and modify something about it
 function decorateWithExample(item) {
-  R.subjects.load(item, 'example');
+  A.subjects.load(item, 'example');
 }
 
 var item = new Item();
