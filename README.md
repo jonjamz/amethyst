@@ -9,7 +9,7 @@ You might look through the examples below and notice that much of the functional
 
 Subjects in Amethyst are a bit like classes, but much more flexible. Like a class, a subject has encapsulation, and it has a public API. But subjects are not instantiated. They are not separate instances. They are, for the most part, comprised of references. Additionally, subjects can affect their parent context where needed and similarly, the parent can affect them when they are loaded in. When you want to build functionality in layers, this extra flexibility can really save the maintainability of an application. If you want to save memory by sharing structures and making things idempotent, this too becomes incredibly easy when compared to setting things up with classes.
 
-So essentially, we're passing common pieces of functionality around and binding them to different contexts. But we're also running functions to load and unload this functionality, and providing some flexible APIs.
+So essentially, we're passing common pieces of functionality around and binding them to different contexts. But we're also running functions to load and unload this functionality, and providing some namespaced APIs.
 
 Subjects in Amethyst ensure that everything you need in order to execute some piece of functionality is self-contained, reusable, and automatically namespaced. Subjects also can very easily share the same data structures across many different parent objects if desired--you can very easily save a subject from within a closure, meaning all components that use that subject have access to the same encapsulated, shared data structures, similar to Flyweight pattern.
 
