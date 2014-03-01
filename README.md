@@ -19,6 +19,16 @@ Subjects force you to build canonical applications. If you create your entire ap
 
 Setting up your application with subjects might take a little more time initially--but it encourages cleaner code and a more structured way of thinking that pays off down the road. It allows you to create easily maintainable, extensible, and uniform applications. It's the ultimate form of DRY.
 
+Amethyst Subjects vs. RequireJS Modules
+---------------------------------------
+- Subjects are designed to be loaded into a _previously unknown context_ in a consistent way. RequireJS modules are dealt with manually at the time they are loaded.
+  - The function to load a subject is written on the subject itself, rather than in `A.subjects.load()` as a callback. It is run in a context defined by the `A.subjects.load()` function.
+  - All defined API methods for the subject are bound to the context provided to `A.subjects.load()`.
+  - Because of the unknown parent context, subjects are automatically namespaced without any extra work from the developer. 
+- The parent context becomes loaded with all the subjects, so you can design things inside subjects to bind to that context as well. For example, at Writebot we use a subject to abstract Meteor templates that allows our event handlers to both access reactive properties scoped to the parent and also the original template event handler context.
+
+As you can see, it's quite a different paradigm than a module system.
+
 Writing a Subject
 -----------------
 
