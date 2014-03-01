@@ -25,7 +25,7 @@ Amethyst Subjects vs. RequireJS Modules
   - The function to load a subject is written on the subject itself, rather than in `A.subjects.load()` as a callback. It is run in a context defined by the `A.subjects.load()` function.
   - All defined API methods for the subject are bound to the context provided to `A.subjects.load()`.
   - Because of the unknown parent context, subjects are automatically namespaced without any extra work from the developer. 
-- The parent context becomes loaded with all the subjects, so you can design things inside subjects to bind to that context as well. For example, at Writebot we use a subject to abstract Meteor templates that allows our event handlers to both access reactive properties scoped to the parent and also the original template event handler context.
+- The parent context becomes loaded with all the subjects, so you can design things inside subjects to bind to that context as well. For example, at Writebot we use a subject to abstract Meteor templates that allows our event handlers to both access reactive properties scoped to the parent and also the original template event handler context. In this way, you have many small subjects working together to form larger components.
 
 As you can see, it's quite a different paradigm than a module system.
 
