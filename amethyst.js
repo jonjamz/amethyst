@@ -1,6 +1,6 @@
 //     Amethyst.js 1.0
-//     http://Amethystjs.org
-//     (c) 2013 Jonathan James, Writebot
+//     http://amethyst.io
+//     (c) 2014 Jonathan James, Writebot
 //     Amethyst may be freely distributed under the MIT license.
 
 (function () {
