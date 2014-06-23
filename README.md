@@ -1,7 +1,7 @@
 About Amethyst
 --------------
 
-Amethyst provides _convention over configuration_ modules for JavaScript. We call these modules _subjects_ because of the programming paradigm that influenced Amethyst. Here's a quick rundown of the features that subjects offer:
+Amethyst provides __convention over configuration__ modules for JavaScript. We call these modules _"subjects"_ because of the programming paradigm that influenced Amethyst. Here's a quick rundown of the features that subjects offer:
 
 * Every subject has a public API. 
 * Every subject has a `loaded()` function. This is written once when the subject is defined, and run each time the subject is loaded.
