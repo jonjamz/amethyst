@@ -188,7 +188,7 @@ This pattern allows you to encapsulate functionality, but it runs immediately on
 ```javascript
 // You want to encapsulate some functionality.
 var Component = (function () {
-  var privateSubject = {};
+  var privateSubject = function () {};
   A.subjects.load(privateSubject, 'example');
   return {
     publicMethod: privateSubject.example.method
