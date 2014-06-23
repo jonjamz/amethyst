@@ -4,12 +4,11 @@ About Amethyst
 Amethyst provides __convention over configuration__ modules for JavaScript. We call these modules _"subjects"_ because of the programming paradigm that influenced Amethyst. Here's a quick rundown of the features that subjects offer:
 
 * Every subject has a public API. 
-* Every subject has a `loaded()` function. This is written once when the subject is defined, and run each time the subject is loaded.
+* Every subject has a `loaded()` function. This is written once when the subject is defined, and run each time the subject is loaded. It is bound to a new, specified context when run.
   * Set up your subject in a new context with `loaded()`. See the examples below.
 * Every subject can specify another subject as a dependency (try not to get too crazy with this though).
 * Subjects are written, saved, and then loaded into a given context. 
   * You can share the same data structures among many subjects loaded into different contexts if you reference outer-scope variables in a `loaded()` function or public API method.
-  * A `loaded()` function is meant to set up a subject in a new context. This function is automatically bound to a new, specified context when run. Take for example: `A.subjects.load(window, [subjectName, [loadArgument1, loadArgument2]]);`. This loads a subject onto `window`, automatically namespaced by the subject's name.
 * Amethyst supports `save` and `load` event hooks. You can add any amount of functions as hooks, and these will have access to information about every subject being saved or loaded passed in as arguments.
   * For example, you could hook into the `after.load` event and write some logic that notifies a third-party service when a specific subject is loaded somewhere. Or, you could set up a new channel on a mediator. Lots you can do.
 
