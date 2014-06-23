@@ -6,7 +6,7 @@ Amethyst provides __convention over configuration__ modules for JavaScript. We c
 * Every subject has a public API. 
 * Every subject has a `loaded()` function. This is written once when the subject is defined, and run each time the subject is loaded. It is bound to a new, specified context when run.
   * Set up your subject in a new context with `loaded()`. See the examples below.
-* Every subject can specify another subject as a dependency (try not to get too crazy with this though).
+* Every subject can specify another subject as a dependency (try not to get too crazy with this, though).
 * Subjects are written, saved, and then loaded into a given context. 
   * You can share the same data structures among many subjects loaded into different contexts if you reference outer-scope variables in a `loaded()` function or public API method.
 * Amethyst supports `save` and `load` event hooks. You can add any amount of functions as hooks, and these will have access to information about every subject being saved or loaded passed in as arguments.
