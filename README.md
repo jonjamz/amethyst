@@ -1,5 +1,5 @@
-Understanding Amethyst
-----------------------
+About Amethyst
+--------------
 
 Amethyst provides _convention over configuration_ modules for JavaScript. We call these modules _subjects_ because of the programming paradigm that influenced Amethyst. Here's a quick rundown of the features that subjects offer:
 
