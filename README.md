@@ -76,12 +76,6 @@ console.log(collisions); // ['john', 'mike']
 
 JavaScript gives us easy referencing, closures, and contextual binding. Amethyst puts these features to use to make flexible and maintainable coding easy.
 
-Subjects ensure that everything you need in order to execute some piece of functionality is self-contained and reusable the way _you_ want. Subjects also can very easily share the same data structures across many different parent objects if desired--you can very easily save a subject from within a closure, meaning all components that use that subject have access to the same original scope.
-
-Subjects force you to build canonical applications. If you create your entire application using subjects, you'll have a single place to control all error handling and logging. Want to integrate the latest remote logging API? Just put it in one place and watch all logs appear there. All the forms in your application will use the same validation and style, and if you want to make some minor changes, you just have to create a new subject that loads in and modifies the previous `forms` subject. The list goes on.
-
-Setting up your application with subjects might take a little more time initially--but it encourages cleaner code and a more structured way of thinking that pays off down the road. It allows you to create easily maintainable, extensible, and uniform applications. It's the ultimate form of DRY.
-
 Amethyst Subjects vs. RequireJS Modules
 ---------------------------------------
 - Subjects are written and used in a uniform, _convention over configuration_ manner. As such, they are less flexible than RequireJS modules. Subjects are not meant to be used across many applications. Rather, they are meant to contribute functionality to modules, and even be used as modules themselves, in a single application.
