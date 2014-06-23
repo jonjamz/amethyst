@@ -1,17 +1,83 @@
 Understanding Amethyst
 ----------------------
 
-Amethyst is an interpretation of the _subject-oriented programming_ paradigm designed for web applications running JavaScript. Subjects are essentially shared subcomponents that handle specific tasks inside an application, and they act as building blocks for larger components. The idea here is that many components will have cross-cutting concerns, or things in common, and the best way to address this issue is by abstracting out the common functionality into separately maintainable objects. A better-known, less radical, but related paradigm is _aspect-oriented programming_. 
+Amethyst provides _convention over configuration_ modules for JavaScript. We call these modules _subjects_ because of the programming paradigm that influenced Amethyst. Here's a quick rundown of the features that subjects offer:
 
-Subjects in Amethyst can be loaded into any context, and they will interact with that context as needed to carry out their functionality. They can list other subjects as dependencies, or a developer can load subjects into anything in a hugely flexible way using the provided `load()` function (see all the patterns below).
+* Every subject has a public API. 
+* Every subject has a `loaded()` function. This is written once when the subject is defined, and run each time the subject is loaded.
+  * Set up your subject in a new context with `loaded()`. See the examples below.
+* Every subject can specify another subject as a dependency (try not to get too crazy with this though).
+* Subjects are written, saved, and then loaded into a given context. 
+  * You can share the same data structures among many subjects loaded into different contexts if you reference outer-scope variables in a `loaded()` function or public API method.
+  * A `loaded()` function is meant to set up a subject in a new context. This function is automatically bound to a new, specified context when run. Take for example: `A.subjects.load(window, [subjectName, [loadArgument1, loadArgument2]]);`. This loads a subject onto `window`, automatically namespaced by the subject's name.
+* Amethyst supports `save` and `load` event hooks. You can add any amount of functions as hooks, and these will have access to information about every subject being saved or loaded passed in as arguments.
+  * For example, you could hook into the `after.load` event and write some logic that notifies a third-party service when a specific subject is loaded somewhere. Or, you could set up a new channel on a mediator. Lots you can do.
 
-You might look through the examples below and notice that much of the functionality we're touting can be created with object-oriented inheritance or module libraries. So, what is the advantage of using subjects?
+More Information
+----------------
 
-Subjects are a bit like classes, but much more flexible. Like a class, a subject has encapsulation, and it has a public API. But subjects are not instantiated. They are not separate instances. They are, for the most part, comprised of references. Additionally, subjects can affect their parent context where needed and similarly, the parent can affect them when they are loaded in. This means that the subject can act destructively on the parent context if it must to ensure its functionality (hence why we automatically namespace subjects), and that the parent can put some kind of spin or new perspective on a subject if desired. When you want to build functionality in layers, this extra flexibility can really save the maintainability of an application.
+Amethyst is an interpretation of the _subject-oriented programming_ paradigm designed for web applications running JavaScript. When you think of _subjects_, think of _adaptive functionality that works across many contexts_. 
 
-Subjects ensure that everything you need in order to execute some piece of functionality is self-contained and reusable the way _you_ want. Subjects also can very easily share the same data structures across many different parent objects if desired--you can very easily save a subject from within a closure, meaning all components that use that subject have access to the same encapsulated, shared data structures, similar to Flyweight pattern.
+When writing a modular application, many modules will have common needs. Sometimes, the proper use of a piece of functionality requires modules to share state. With Amethyst, common functionality doesn't need to be abstracted out of the private scope. It can be written in one place and loaded into many contexts as a cross-cutting concern.
 
-Subjects __are easily lazy-loaded__ (see the constructor pattern below). Child subjects of a parent don't run until you load the parent. _This differs greatly from a typical component or package system, as the relationship between subjects is deliberately left open-ended and decoupled._ You can have a subject within a subject within a subject (an so on) and if you don't load the parent, the children won't load either. This allows you to explore deep functionality and customization at a negligible cost. Use what you need when you need it.
+So, subjects are essentially shared submodules designed to be composed into larger modules. Check this out:
+
+```javascript
+
+// Let's create a character module using subjects
+var Character = function (name, faceType, bodyType) {
+  this.name = name;
+
+  A.subjects.load(this,
+    ['faces', faceType],
+    ['bodies', bodyType]
+  );
+
+};
+
+// Let's add some animations compatible with the faces and bodies subjects
+// We don't need to wrap the arguments in an array if we're not specifying any options for `loaded()`
+A.subjects.load(Character.prototype,
+  'faceAnimations',
+  'bodyAnimations'
+);
+
+// Now we'll create some characters
+var character1 = new Character('john', ['green-eyes', 'smile-3'], ['tall', 'skinny']);
+var character2 = new Character('mike', ['blue-eyes', 'smile-1'], ['medium', 'strong']);
+
+// faceAnimations and bodyAnimations both depend on the `rendering` subject, so it's loaded in already
+// Let's render our characters now
+character1.rendering.render({x: 123, y: 123, z: 123});
+character2.rendering.render({x: 123, y: 123, z: 200});
+
+// Make one smile and the other walk
+character1.faceAnimations.smile();
+character2.bodyAnimations.walk(1, 'forward');
+
+// You know what, let's modify character1 to look like an alien
+A.subjects.load(character1,
+  ['faces', ['alien-eyes', 'alien-smile']],
+  ['bodies', ['tall', 'alien']]
+);
+
+// Re-render character1
+character1.rendering.renderInPlace();
+
+// Cool, so now we can load the rendering subject somewhere else and access shared state
+var map = function () {
+  A.subjects.load(this, 'rendering');
+};
+
+// Check if any items on the screen are colliding
+var collisions = map.rendering.anyColliding();
+console.log(collisions); // ['john', 'mike']
+
+```
+
+JavaScript gives us easy referencing, closures, and contextual binding. Amethyst puts these features to use to make flexible and maintainable coding easy.
+
+Subjects ensure that everything you need in order to execute some piece of functionality is self-contained and reusable the way _you_ want. Subjects also can very easily share the same data structures across many different parent objects if desired--you can very easily save a subject from within a closure, meaning all components that use that subject have access to the same original scope.
 
 Subjects force you to build canonical applications. If you create your entire application using subjects, you'll have a single place to control all error handling and logging. Want to integrate the latest remote logging API? Just put it in one place and watch all logs appear there. All the forms in your application will use the same validation and style, and if you want to make some minor changes, you just have to create a new subject that loads in and modifies the previous `forms` subject. The list goes on.
 
@@ -19,13 +85,11 @@ Setting up your application with subjects might take a little more time initiall
 
 Amethyst Subjects vs. RequireJS Modules
 ---------------------------------------
-- Subjects are designed to be loaded into a _previously unknown context_ in a consistent way. RequireJS modules are dealt with manually at the time they are loaded.
+- Subjects are written and used in a uniform, _convention over configuration_ manner. As such, they are less flexible than RequireJS modules. Subjects are not meant to be used across many applications. Rather, they are meant to contribute functionality to modules, and even be used as modules themselves, in a single application.
   - The function to load a subject is written on the subject itself, rather than in `A.subjects.load()` as a callback. It is run in a context defined by the `A.subjects.load()` function.
   - All defined API methods for the subject are bound to the context provided to `A.subjects.load()`.
-  - Because of the unknown parent context, subjects are automatically namespaced without any extra work from the developer. 
+  - Because of the unknown parent context, subjects are automatically namespaced without any extra work from the developer.
 - The parent context becomes loaded with all the subjects, so you can design things inside subjects to bind to that context as well. For example, at Writebot we use a subject to abstract Meteor templates that allows our event handlers to both access reactive properties scoped to the parent and also the original template event handler context. In this way, you have many small subjects working together to form larger components.
-
-As you can see, it's quite a different paradigm than a module system.
 
 Writing a Subject
 -----------------
@@ -35,7 +99,7 @@ There are three ways to gain functionality from a subject:
   - Can be used to create a closure unique to every load
 - From whatever's in the subject's closure (shared among all loaded subjects, see `store` below...it's easy to cache things across subjects, similar to a Flyweight)
 - From whatever's in the API
-  - If loaded() does something on `this`, the API can offer different ways of dealing with what it created, since they're both bound to whatever A.subjects.load specified as the first argument.
+  - If loaded() does something on `this`, the API can offer different ways of dealing with what it created, since they're both bound to whatever `A.subjects.load` specified as the first argument.
 - Loaded can set up all the subject's functionality, but the API provides the official methods of dealing with that functionality
 
 ```javascript
