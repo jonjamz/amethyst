@@ -15,7 +15,7 @@ Amethyst provides __convention over configuration__ modules for JavaScript. We c
 More Information
 ----------------
 
-Amethyst is an interpretation of the _subject-oriented programming_ paradigm designed for web applications running JavaScript. When you think of _subjects_, think of _adaptive functionality that works across many contexts_. 
+Amethyst is an interpretation of the __subject-oriented programming__ paradigm designed for web applications running JavaScript. When you think of _"subjects"_, think of _"adaptive functionality that works across many contexts"_. 
 
 When writing a modular application, many modules will have common needs. Sometimes, the proper use of a piece of functionality requires modules to share state. With Amethyst, common functionality doesn't need to be abstracted out of the private scope. It can be written in one place and loaded into many contexts as a cross-cutting concern.
 
