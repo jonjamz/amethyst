@@ -78,7 +78,8 @@ JavaScript gives us easy referencing, closures, and contextual binding. Amethyst
 
 Amethyst Subjects vs. RequireJS Modules
 ---------------------------------------
-- Subjects are written and used in a uniform, _convention over configuration_ manner. As such, they are less flexible than RequireJS modules. Subjects are not meant to be used across many applications. Rather, they are meant to contribute functionality to modules, and even be used as modules themselves, in a single application.
+- Amethyst automatically binds all defined methods to a parent context.
+- Subjects are written and used in a uniform, _convention over configuration_ manner. As such, they are less flexible than RequireJS modules. Subjects may be used across many applications, but they are primarily meant to contribute functionality to modules, and even be used as modules themselves, in a single application.
   - The function to load a subject is written on the subject itself, rather than in `A.subjects.load()` as a callback. It is run in a context defined by the `A.subjects.load()` function.
   - All defined API methods for the subject are bound to the context provided to `A.subjects.load()`.
   - Because of the unknown parent context, subjects are automatically namespaced without any extra work from the developer.
