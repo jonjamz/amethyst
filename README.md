@@ -3,11 +3,12 @@ About Amethyst
 
 Amethyst provides __convention over configuration__ modules for JavaScript. We call these modules _"subjects"_ because of the programming paradigm that influenced Amethyst. Here's a quick rundown of the features that subjects offer:
 
-* Every subject has a public API. 
+* Every subject has a public API.
 * Every subject has a `loaded()` function. This is written once when the subject is defined, and run each time the subject is loaded. It is bound to a new, specified context when run.
   * Set up your subject in a new context with `loaded()`. See the examples below.
+  * A similar `unloaded()` function can be written as well.
 * Every subject can specify another subject as a dependency (try not to get too crazy with this, though).
-* Subjects are written, saved, and then loaded into a given context. 
+* Subjects are written, saved, and then loaded into a given context.
   * You can share the same data structures among many subjects loaded into different contexts if you reference outer-scope variables in a `loaded()` function or public API method.
 * Amethyst supports `save` and `load` event hooks. You can add any amount of functions as hooks, and these will have access to information about every subject being saved or loaded passed in as arguments.
   * For example, you could hook into the `after.load` event and write some logic that notifies a third-party service when a specific subject is loaded somewhere. Or, you could set up a new channel on a mediator. Lots you can do.
@@ -15,7 +16,7 @@ Amethyst provides __convention over configuration__ modules for JavaScript. We c
 More Information
 ----------------
 
-Amethyst is an interpretation of the __subject-oriented programming__ paradigm designed for web applications running JavaScript. When you think of _"subjects"_, think of _"adaptive functionality that works across many contexts"_. 
+Amethyst is an interpretation of the __subject-oriented programming__ paradigm designed for web applications running JavaScript. When you think of _"subjects"_, think of _"adaptive functionality that works across many contexts"_.
 
 When writing a modular application, many modules will have common needs. Sometimes, the proper use of a piece of functionality requires modules to share state. With Amethyst, common functionality doesn't need to be abstracted out of the private scope. It can be written in one place and loaded into many contexts as a cross-cutting concern.
 
@@ -83,7 +84,7 @@ Amethyst Subjects vs. RequireJS Modules
   - The function to load a subject is written on the subject itself, rather than in `A.subjects.load()` as a callback. It is run in a context defined by the `A.subjects.load()` function.
   - All defined API methods for the subject are bound to the context provided to `A.subjects.load()`.
   - Because of the unknown parent context, subjects are automatically namespaced without any extra work from the developer.
-- The parent context becomes loaded with all the subjects, so you can design things inside subjects to bind to that context as well. For example, at Writebot we use a subject to abstract Meteor templates that allows our event handlers to both access reactive properties scoped to the parent and also the original template event handler context. In this way, you have many small subjects working together to form larger components.
+- The parent context becomes loaded with all the subjects, so you can design things inside subjects to bind to that context as well. For example, on one project, we use a subject to abstract Meteor templates that allows our event handlers to both access reactive properties scoped to the parent and also the original template event handler context. In this way, you have many small subjects working together to form larger components.
 
 Writing a Subject
 -----------------
@@ -206,6 +207,15 @@ decorateWithExample(item);
 ```
 
 Singletons are also possible, as well as other patterns. Use your imagination!
+
+Upcoming Features
+-----------------
+
+I'm about to release a new feature for Amethyst that allows for composing many subjects into groups, where you have the option to rename any clashing public API names. This will bypass the automatic namespacing that usually occurs when loading subjects into a parent context. 
+
+I will also release a few helpful utilities.
+
+An Amethyst server using Meteor's DDP protocol will also enable subjects to be remote-loaded in real-time.
 
 Author
 ------
